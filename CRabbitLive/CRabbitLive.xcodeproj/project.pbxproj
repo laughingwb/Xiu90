@@ -32,6 +32,9 @@
 		2DD710601E1BE55A00BD042C /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DD7105F1E1BE55A00BD042C /* libiconv.tbd */; };
 		2DD710621E1BE56200BD042C /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DD710611E1BE56200BD042C /* OpenGLES.framework */; };
 		2DD710641E1BE56600BD042C /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DD710631E1BE56600BD042C /* CoreImage.framework */; };
+		2DD710681E1D22EB00BD042C /* FFmpegmuxer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD710671E1D22EB00BD042C /* FFmpegmuxer.m */; };
+		2DD7106B1E1D230A00BD042C /* FFEncoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DD7106A1E1D230A00BD042C /* FFEncoder.c */; };
+		2DD7106E1E1D2E8A00BD042C /* H264Encoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD7106D1E1D2E8A00BD042C /* H264Encoder.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -180,6 +183,12 @@
 		2DD7105F1E1BE55A00BD042C /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = usr/lib/libiconv.tbd; sourceTree = SDKROOT; };
 		2DD710611E1BE56200BD042C /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		2DD710631E1BE56600BD042C /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
+		2DD710661E1D22EB00BD042C /* FFmpegmuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFmpegmuxer.h; sourceTree = "<group>"; };
+		2DD710671E1D22EB00BD042C /* FFmpegmuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFmpegmuxer.m; sourceTree = "<group>"; };
+		2DD710691E1D230A00BD042C /* FFEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFEncoder.h; sourceTree = "<group>"; };
+		2DD7106A1E1D230A00BD042C /* FFEncoder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = FFEncoder.c; sourceTree = "<group>"; };
+		2DD7106C1E1D2E8A00BD042C /* H264Encoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = H264Encoder.h; sourceTree = "<group>"; };
+		2DD7106D1E1D2E8A00BD042C /* H264Encoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = H264Encoder.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -248,6 +257,7 @@
 		2DD70FA51E1BE4E900BD042C /* CRabbitLive */ = {
 			isa = PBXGroup;
 			children = (
+				2DD710651E1D1E1F00BD042C /* Encoder */,
 				2DD70FD91E1BE51A00BD042C /* ffmpeg */,
 				2DD70FA91E1BE4E900BD042C /* AppDelegate.h */,
 				2DD70FAA1E1BE4E900BD042C /* AppDelegate.m */,
@@ -486,6 +496,19 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		2DD710651E1D1E1F00BD042C /* Encoder */ = {
+			isa = PBXGroup;
+			children = (
+				2DD710661E1D22EB00BD042C /* FFmpegmuxer.h */,
+				2DD710671E1D22EB00BD042C /* FFmpegmuxer.m */,
+				2DD710691E1D230A00BD042C /* FFEncoder.h */,
+				2DD7106A1E1D230A00BD042C /* FFEncoder.c */,
+				2DD7106C1E1D2E8A00BD042C /* H264Encoder.h */,
+				2DD7106D1E1D2E8A00BD042C /* H264Encoder.m */,
+			);
+			path = Encoder;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -620,8 +643,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2DD7106E1E1D2E8A00BD042C /* H264Encoder.m in Sources */,
 				2DD70FAE1E1BE4E900BD042C /* ViewController.m in Sources */,
 				2DD70FAB1E1BE4E900BD042C /* AppDelegate.m in Sources */,
+				2DD710681E1D22EB00BD042C /* FFmpegmuxer.m in Sources */,
+				2DD7106B1E1D230A00BD042C /* FFEncoder.c in Sources */,
 				2DD70FA81E1BE4E900BD042C /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -870,6 +896,7 @@
 				2DD70FD21E1BE4E900BD042C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		2DD70FD31E1BE4E900BD042C /* Build configuration list for PBXNativeTarget "CRabbitLiveTests" */ = {
 			isa = XCConfigurationList;
@@ -878,6 +905,7 @@
 				2DD70FD51E1BE4E900BD042C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		2DD70FD61E1BE4E900BD042C /* Build configuration list for PBXNativeTarget "CRabbitLiveUITests" */ = {
 			isa = XCConfigurationList;
@@ -886,6 +914,7 @@
 				2DD70FD81E1BE4E900BD042C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

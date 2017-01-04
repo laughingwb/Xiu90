@@ -18,12 +18,18 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    avformat_version();
+    firstFrame = NO;
+    [self initH264Encoder];
     [self createCaptureDevice];
     [self createOutput];
     [self createCaptureSession];
     [self createPreviewLayer];
     // Do any additional setup after loading the view, typically from a nib.
+}
+
+-(void)initH264Encoder {
+    h264Encoder = [[H264Encoder alloc]init];
+    [h264Encoder initWithConfiguration];
 }
 
 -(void)createCaptureDevice {
@@ -46,7 +52,6 @@
     [self.videoDataOutput setSampleBufferDelegate:self queue:captureQueue];
     [self.videoDataOutput setAlwaysDiscardsLateVideoFrames:YES];
     [self.videoDataOutput setVideoSettings:@{(__bridge NSString *)kCVPixelBufferPixelFormatTypeKey:@(kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange)}];
-    
     
     self.audioDataOutput = [[AVCaptureAudioDataOutput alloc] init];
     [self.audioDataOutput setSampleBufferDelegate:self queue:captureQueue];
@@ -95,7 +100,12 @@
 
 - (void) captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
     if (connection == videoConnection){
-        
+        if (firstFrame) {
+            CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+            int width = (int)CVPixelBufferGetWidth(pixelBuffer);
+            int height = (int)CVPixelBufferGetHeight(pixelBuffer);
+            [h264Encoder initEncode:width height:height];
+        }
     }else {
         
     }
