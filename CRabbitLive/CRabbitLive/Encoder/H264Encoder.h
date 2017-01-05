@@ -19,6 +19,7 @@
     int  frameCount;
     NSData *sps;
     NSData *pps;
+    dispatch_queue_t queue;
 }
 
 
