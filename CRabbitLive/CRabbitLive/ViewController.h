@@ -9,12 +9,17 @@
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
 #import "H264Encoder.h"
+#import "FFmpegmuxer.h"
 
 @interface ViewController : UIViewController<AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate> {
     AVCaptureConnection *videoConnection;
     AVCaptureVideoPreviewLayer *previewLayer;
     BOOL firstFrame;
     H264Encoder *h264Encoder;
+    FFmpegmuxer *flvMuxer;
+    BOOL videoinited;
+    BOOL audioinited;
+    BOOL spsPPSseted;
 }
 
 @property (nonatomic, strong) AVCaptureDeviceInput *frontCamera;

@@ -18,10 +18,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    firstFrame = NO;
+    flvMuxer = [[FFmpegmuxer alloc]initOut:@"rtmp://live.hkstv.hk.lxdns.com/live/hks"];
+    firstFrame = YES;
     [self initH264Encoder];
     [self createCaptureDevice];
     [self createOutput];
+    
     [self createCaptureSession];
     [self createPreviewLayer];
     // Do any additional setup after loading the view, typically from a nib.
@@ -101,16 +103,25 @@
 - (void) captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
     if (connection == videoConnection){
         if (firstFrame) {
+            firstFrame = NO;
             CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
             int width = (int)CVPixelBufferGetWidth(pixelBuffer);
             int height = (int)CVPixelBufferGetHeight(pixelBuffer);
+            [self gotVideoFmt:width height:height];
             [h264Encoder initEncode:width height:height];
         }
+        [h264Encoder encode:sampleBuffer];
     }else {
         
     }
 }
 
+-(void)gotVideoFmt:(int)width height:(int)height{
+    NSLog(@"width:%d height:%d",width,height);
+    [flvMuxer InitVideoStream:width VideoHeight:height FrameRate:25];
+    //InitVideoStream(1, width, height, 25);
+    videoinited = YES;
+}
 
 
 - (void)didReceiveMemoryWarning {

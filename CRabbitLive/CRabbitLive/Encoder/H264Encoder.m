@@ -9,6 +9,7 @@
 #import "H264Encoder.h"
 
 @implementation H264Encoder
+@synthesize delegate;
 
 - (void) initWithConfiguration{
     /*yuvFile = [documentsDirectory stringByAppendingPathComponent:@"test.i420"];
@@ -17,10 +18,11 @@
      NSLog(@"H264: File does not exist");
      return;
      }*/
-    
+    spsSended  = NO;
     EncodingSession = nil;
     initialized = true;
     aQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    queue = dispatch_queue_create("h264encode", DISPATCH_QUEUE_SERIAL);
     frameCount = 0;
     sps = NULL;
     pps = NULL;
@@ -130,7 +132,7 @@ void didCompressH264(void *outputCallbackRefCon, void *sourceFrameRefCon, OSStat
             
             // 大端模式转化为系统端模式
             naluLength = CFSwapInt32BigToHost(naluLength);
-            NSLog(@"got nalu data, length=%d, totalLength=%zu", naluLength, totalLength);
+//            NSLog(@"got nalu data, length=%d, totalLength=%zu", naluLength, totalLength);
              // 保存nalu数据到文件
             NSData* data = [[NSData alloc] initWithBytes:(dataPointer + bufferOffset + AVCCHeaderLength) length:naluLength];
            
@@ -145,28 +147,54 @@ void didCompressH264(void *outputCallbackRefCon, void *sourceFrameRefCon, OSStat
     }
 }
 
+- (void) encode:(CMSampleBufferRef )sampleBuffer {
+    dispatch_sync(aQueue, ^{
+        frameCount++;
+        CVImageBufferRef imageBuffer = (CVImageBufferRef)CMSampleBufferGetImageBuffer(sampleBuffer);
+        
+        CMTime presentationTimeStamp = CMTimeMake(frameCount, 1000);
+        VTEncodeInfoFlags flags;
+        
+        OSStatus statusCode = VTCompressionSessionEncodeFrame(EncodingSession,imageBuffer,presentationTimeStamp,kCMTimeInvalid,NULL, NULL, &flags);
+        if (statusCode != noErr) {
+            VTCompressionSessionInvalidate(EncodingSession);
+            CFRelease(EncodingSession);
+            EncodingSession = NULL;
+            return;
+        }
+    });
+}
+
 - (void)gotEncodedData:(NSData*)data isKeyFrame:(BOOL)isKeyFrame{
     const char bytes[] = "\x00\x00\x00\x01";
     size_t length = (sizeof bytes) - 1; //string literals have implicit trailing '\0'
     NSData *ByteHeader = [NSData dataWithBytes:bytes length:length];
-//    if (VideoEncodeData == nil)
-//    {
-//        VideoEncodeData = [[NSMutableData alloc]init];
-//    }
-//    
-//    [VideoEncodeData appendData:ByteHeader];
-//    [VideoEncodeData appendData:spsdata];
-//    [VideoEncodeData appendData:ByteHeader];
-//    [VideoEncodeData appendData:ppsdata];
-//    if(SPSSended == NO)
-//    {
-//        
-//        SPSSended = [delegate gotSPSPPS:VideoEncodeData];
-//    }
+    if (videoEncodeData == nil)
+    {
+        videoEncodeData = [[NSMutableData alloc]init];
+    }
+    [videoEncodeData appendData:ByteHeader];
+    [videoEncodeData appendData:data];
+    
+    
 }
 
 - (void)gotSpsPps:(NSData*)spsdata pps:(NSData*)ppsdata{
+    const char bytes[] = "\x00\x00\x00\x01";
+    size_t length = (sizeof bytes) - 1; //string literals have implicit trailing '\0'
+    NSData *ByteHeader = [NSData dataWithBytes:bytes length:length];
+    if (videoEncodeData == nil)
+    {
+        videoEncodeData = [[NSMutableData alloc]init];
+    }
     
+    [videoEncodeData appendData:ByteHeader];
+    [videoEncodeData appendData:spsdata];
+    [videoEncodeData appendData:ByteHeader];
+    [videoEncodeData appendData:ppsdata];
+    if(spsSended == NO){
+//        spsSended = [delegate gotSPSPPS:VideoEncodeData];
+    }
 }
 
 @end
