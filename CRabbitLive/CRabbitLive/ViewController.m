@@ -31,6 +31,7 @@
 
 -(void)initH264Encoder {
     h264Encoder = [[H264Encoder alloc]init];
+    h264Encoder.delegate = self;
     [h264Encoder initWithConfiguration];
 }
 
@@ -123,11 +124,33 @@
     videoinited = YES;
 }
 
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - H264Encoder
+-(void)gotVideoData:(NSData *)data isKeyFrame:(BOOL)isKeyFrame {
+    static BOOL first = YES;
+    if (videoinited && audioinited && spsPPSseted){
+        if(first){
+            if (isKeyFrame == NO) return;
+            first = NO;
+        }
+        int ret = [flvMuxer WriteStreamVideoData:((uint8_t*)[data bytes]) DataLen:(int)[data length] KeyFlag:isKeyFrame];
+        //int ret = WriteStreamVideoData(((uint8_t*)[data bytes]) ,  (int)[data length]);
+        if(ret < 0)
+            NSLog(@"video write error %d",ret);
+    }
+}
+
+-(BOOL)gotSPSPPS:(NSData*)SPSPPS {
+    if (videoinited == NO) {
+        return NO;
+    }
+    [flvMuxer SetH264SPSPPS:SPSPPS];
+    spsPPSseted = YES;
+    return YES;
+}
 
 @end

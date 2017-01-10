@@ -11,7 +11,7 @@
 #import "H264Encoder.h"
 #import "FFmpegmuxer.h"
 
-@interface ViewController : UIViewController<AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate> {
+@interface ViewController : UIViewController<AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate,H264EncoderDelegate> {
     AVCaptureConnection *videoConnection;
     AVCaptureVideoPreviewLayer *previewLayer;
     BOOL firstFrame;

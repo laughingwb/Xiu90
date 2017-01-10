@@ -66,5 +66,48 @@
     return YES;
 }
 
+-(BOOL) WriteStreamVideoData:(uint8_t*)VideoData DataLen:(int)DataLen KeyFlag:(BOOL)KeyFlag {
+    if (Out_Format_Inited == NO){
+        int hret = avformat_write_header(Out_Format_Ctx,NULL);
+        if (hret !=0 ){
+            return hret;
+        }
+        Out_Format_Inited = YES;
+    }
+    AVPacket VideoPkt; //记录音视频相关的属性值
+    av_init_packet(&VideoPkt);
+    if (AudioStartTime == 0) {
+        AudioStartTime = av_gettime();
+    }
+    VideoPkt.data = VideoData;
+    VideoPkt.size = DataLen;
+    int64_t DecTime =  av_gettime() - AudioStartTime;
+    VideoPkt.pts = av_rescale_q_rnd(DecTime, AV_TIME_BASE_Q, Out_Video_Stream->time_base, (AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+    VideoPkt.dts = AV_NOPTS_VALUE;
+    VideoPkt.pos = -1;
+    VideoPkt.stream_index = Out_Video_Stream->index;
+    if (KeyFlag){
+        VideoPkt.flags |= AV_PKT_FLAG_KEY;
+    }
+    pthread_mutex_lock(&OutMutex);
+    int ret = av_write_frame(Out_Format_Ctx, &VideoPkt);
+    pthread_mutex_unlock(&OutMutex);
+    av_free_packet(&VideoPkt);
+    
+    return ret == 0;
+}
+
+-(void)SetH264SPSPPS:(NSData *)SPSPPS {
+    int len = (int)[SPSPPS length];
+    if (Out_Video_Codec_Ctx->extradata_size < len){
+        if (!Out_Video_Codec_Ctx->extradata){
+            free(Out_Video_Codec_Ctx->extradata);
+        }
+        Out_Video_Codec_Ctx->extradata = malloc(len);
+    }
+    memset(Out_Video_Codec_Ctx->extradata, 0, len);
+    memcpy(Out_Video_Codec_Ctx->extradata, [SPSPPS bytes], len);
+    Out_Video_Codec_Ctx->extradata_size = len;
+}
 
 @end

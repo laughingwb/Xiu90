@@ -39,4 +39,7 @@
 
 -(id) initOut:(NSString*)OutUrl;
 -(BOOL) InitVideoStream:(int)VideoWidth VideoHeight:(int)VideoHeight FrameRate:(int)FrameRate;
+-(BOOL) WriteStreamVideoData:(uint8_t*)VideoData DataLen:(int)DataLen KeyFlag:(BOOL)KeyFlag;
+-(void) SetH264SPSPPS:(NSData*)SPSPPS;
+
 @end

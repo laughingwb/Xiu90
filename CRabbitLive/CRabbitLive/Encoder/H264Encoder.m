@@ -82,7 +82,7 @@ void didCompressH264(void *outputCallbackRefCon, void *sourceFrameRefCon, OSStat
         NSLog(@"didCompressH264 data is not ready ");
         return;
     }
-    H264Encoder* encoder = (__bridge H264Encoder*)outputCallbackRefCon;
+    H264Encoder *encoder = (__bridge H264Encoder*)outputCallbackRefCon;
     // 判断当前帧是否为关键帧
     bool keyframe = !CFDictionaryContainsKey( (CFArrayGetValueAtIndex(CMSampleBufferGetSampleAttachmentsArray(sampleBuffer, true), 0)), kCMSampleAttachmentKey_NotSync);
     // 获取sps & pps数据. sps pps只需获取一次，保存在h264文件开头即可
@@ -175,7 +175,8 @@ void didCompressH264(void *outputCallbackRefCon, void *sourceFrameRefCon, OSStat
     }
     [videoEncodeData appendData:ByteHeader];
     [videoEncodeData appendData:data];
-    
+    [self.delegate gotVideoData:videoEncodeData isKeyFrame:isKeyFrame];
+    videoEncodeData = nil;
     
 }
 
@@ -193,7 +194,7 @@ void didCompressH264(void *outputCallbackRefCon, void *sourceFrameRefCon, OSStat
     [videoEncodeData appendData:ByteHeader];
     [videoEncodeData appendData:ppsdata];
     if(spsSended == NO){
-//        spsSended = [delegate gotSPSPPS:VideoEncodeData];
+        spsSended = [self.delegate gotSPSPPS:videoEncodeData];
     }
 }
 
