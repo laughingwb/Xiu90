@@ -20,7 +20,9 @@
     [super viewDidLoad];
     flvMuxer = [[FFmpegmuxer alloc]initOut:@"rtmp://live.hkstv.hk.lxdns.com/live/hks"];
     firstFrame = YES;
+    firstAudio = YES;
     [self initH264Encoder];
+    [self initAACEncoder];
     [self createCaptureDevice];
     [self createOutput];
     
@@ -33,6 +35,11 @@
     h264Encoder = [[H264Encoder alloc]init];
     h264Encoder.delegate = self;
     [h264Encoder initWithConfiguration];
+}
+
+-(void)initAACEncoder {
+    iosAACEncoder = [[IOSAACEncoder alloc]init];
+    iosAACEncoder.delegate = self;
 }
 
 -(void)createCaptureDevice {
@@ -89,6 +96,12 @@
     
     videoConnection = [self.videoDataOutput connectionWithMediaType:AVMediaTypeVideo];
     
+    audioConnection = [self.audioDataOutput connectionWithMediaType:AVMediaTypeAudio];
+}
+
+- (void)setDirection:(int)Direction{
+    videoConnection.videoOrientation = Direction;
+    previewLayer.connection.videoOrientation = videoConnection.videoOrientation;
 }
 
 //创建预览
@@ -96,8 +109,8 @@
     previewLayer = [AVCaptureVideoPreviewLayer layerWithSession:self.captureSession];
     [previewLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
     previewLayer.frame = self.view.bounds;
-    previewLayer.connection.videoOrientation = videoConnection.videoOrientation;
     previewLayer.position = CGPointMake(CGRectGetMidX(self.view.bounds),CGRectGetMidY(self.view.bounds));
+    [self setDirection:UIDeviceOrientationPortrait];
     [self.view.layer addSublayer:previewLayer];
 }
 
@@ -112,15 +125,38 @@
             [h264Encoder initEncode:width height:height];
         }
         [h264Encoder encode:sampleBuffer];
-    }else {
-        
+    }else if (connection == audioConnection) {
+//        if (firstAudio) {
+//            AudioStreamBasicDescription inputFormat = *(CMAudioFormatDescriptionGetStreamBasicDescription(CMSampleBufferGetFormatDescription(sampleBuffer)));
+//            if ([iosAACEncoder initEncode:inputFormat]) {
+//                [self gotAudioFmt:inputFormat.mSampleRate Channels:inputFormat.mChannelsPerFrame SampleBytes:[iosAACEncoder GetAudioFmt:inputFormat.mFormatFlags FmtBits:inputFormat.mBitsPerChannel]];
+//                
+//                firstAudio = NO;
+//            }else {
+//                return;
+//            }
+//        }
+//        int nSize = (int)CMSampleBufferGetTotalSampleSize(sampleBuffer);
+//        char szBuf[8192];
+//        if ([iosAACEncoder encoderAAC:sampleBuffer aacData:szBuf aacLen:&nSize]){
+//            NSData *aacdata = [NSData dataWithBytes:szBuf length:nSize];
+//            [self gotAudioData:aacdata];
+//        }
+    }
+}
+
+-(void)gotAudioData:(NSData*)data{
+    if (videoinited && audioinited && spsPPSseted){
+        int ret = [flvMuxer WriteStreamAudioData:((uint8_t*)[data bytes]) DataLen:(int)[data length]];
+        //int ret = WriteStreamAudioData(((uint8_t*)[data bytes]),  (int)[data length]);
+        if(ret < 0)
+            NSLog(@"audio write error %d",ret);
     }
 }
 
 -(void)gotVideoFmt:(int)width height:(int)height{
     NSLog(@"width:%d height:%d",width,height);
     [flvMuxer InitVideoStream:width VideoHeight:height FrameRate:25];
-    //InitVideoStream(1, width, height, 25);
     videoinited = YES;
 }
 
@@ -132,15 +168,16 @@
 #pragma mark - H264Encoder
 -(void)gotVideoData:(NSData *)data isKeyFrame:(BOOL)isKeyFrame {
     static BOOL first = YES;
-    if (videoinited && audioinited && spsPPSseted){
+    if (videoinited  && spsPPSseted){
         if(first){
             if (isKeyFrame == NO) return;
             first = NO;
         }
         int ret = [flvMuxer WriteStreamVideoData:((uint8_t*)[data bytes]) DataLen:(int)[data length] KeyFlag:isKeyFrame];
         //int ret = WriteStreamVideoData(((uint8_t*)[data bytes]) ,  (int)[data length]);
-        if(ret < 0)
+        if(ret < 0) {
             NSLog(@"video write error %d",ret);
+        }
     }
 }
 
@@ -151,6 +188,12 @@
     [flvMuxer SetH264SPSPPS:SPSPPS];
     spsPPSseted = YES;
     return YES;
+}
+
+#pragma mark - AACEncoder
+-(void)gotAudioFmt:(int)SampleRate Channels:(int)channels SampleBytes:(enum Audio_Format_Type)SampleBytes {
+    [flvMuxer InitAudioStream:channels AudioSampleRate:SampleRate SampleDataFmt:0];
+    audioinited = YES;
 }
 
 @end

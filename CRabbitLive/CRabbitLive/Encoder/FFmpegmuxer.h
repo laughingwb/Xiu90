@@ -41,5 +41,7 @@
 -(BOOL) InitVideoStream:(int)VideoWidth VideoHeight:(int)VideoHeight FrameRate:(int)FrameRate;
 -(BOOL) WriteStreamVideoData:(uint8_t*)VideoData DataLen:(int)DataLen KeyFlag:(BOOL)KeyFlag;
 -(void) SetH264SPSPPS:(NSData*)SPSPPS;
-
+-(BOOL) InitAudioStream:(int)AudioChannels AudioSampleRate:(int)AudioSampleRate SampleDataFmt:(int)SampleDataFmt;
+-(BOOL) WriteStreamAudioData:(uint8_t*)AudioData DataLen:(int)DataLen;
+-(void) Close;
 @end

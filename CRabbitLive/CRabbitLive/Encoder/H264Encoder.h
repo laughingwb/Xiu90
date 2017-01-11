@@ -14,8 +14,6 @@
 @protocol H264EncoderDelegate <NSObject>
 -(void)gotVideoData:(NSData*)data isKeyFrame:(BOOL)isKeyFrame;
 -(void)gotVideoFmt:(int)width height:(int)height;
--(void)gotAudioData:(NSData*)data;
--(void)gotAudioFmt:(int)SampleRate Channels:(int)channels SampleBytes:(enum Audio_Format_Type)SampleBytes;
 -(BOOL)gotSPSPPS:(NSData*)SPSPPS;
 @end
 

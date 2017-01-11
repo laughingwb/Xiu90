@@ -10,12 +10,16 @@
 #import <AVFoundation/AVFoundation.h>
 #import "H264Encoder.h"
 #import "FFmpegmuxer.h"
+#import "IOSAACEncoder.h"
 
-@interface ViewController : UIViewController<AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate,H264EncoderDelegate> {
+@interface ViewController : UIViewController<AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate,H264EncoderDelegate,IOSAACEncoderDelegate> {
     AVCaptureConnection *videoConnection;
+    AVCaptureConnection *audioConnection;
     AVCaptureVideoPreviewLayer *previewLayer;
     BOOL firstFrame;
+    BOOL firstAudio;
     H264Encoder *h264Encoder;
+    IOSAACEncoder *iosAACEncoder;
     FFmpegmuxer *flvMuxer;
     BOOL videoinited;
     BOOL audioinited;

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2DA933E71E26142E0014660C /* IOSAACEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DA933E61E26142E0014660C /* IOSAACEncoder.m */; };
 		2DD70FA81E1BE4E900BD042C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD70FA71E1BE4E900BD042C /* main.m */; };
 		2DD70FAB1E1BE4E900BD042C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD70FAA1E1BE4E900BD042C /* AppDelegate.m */; };
 		2DD70FAE1E1BE4E900BD042C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD70FAD1E1BE4E900BD042C /* ViewController.m */; };
@@ -55,6 +56,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2DA933E51E26142E0014660C /* IOSAACEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSAACEncoder.h; sourceTree = "<group>"; };
+		2DA933E61E26142E0014660C /* IOSAACEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSAACEncoder.m; sourceTree = "<group>"; };
 		2DD70FA31E1BE4E900BD042C /* CRabbitLive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CRabbitLive.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2DD70FA71E1BE4E900BD042C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		2DD70FA91E1BE4E900BD042C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -505,6 +508,8 @@
 				2DD7106A1E1D230A00BD042C /* FFEncoder.c */,
 				2DD7106C1E1D2E8A00BD042C /* H264Encoder.h */,
 				2DD7106D1E1D2E8A00BD042C /* H264Encoder.m */,
+				2DA933E51E26142E0014660C /* IOSAACEncoder.h */,
+				2DA933E61E26142E0014660C /* IOSAACEncoder.m */,
 			);
 			path = Encoder;
 			sourceTree = "<group>";
@@ -647,6 +652,7 @@
 				2DD70FAE1E1BE4E900BD042C /* ViewController.m in Sources */,
 				2DD70FAB1E1BE4E900BD042C /* AppDelegate.m in Sources */,
 				2DD710681E1D22EB00BD042C /* FFmpegmuxer.m in Sources */,
+				2DA933E71E26142E0014660C /* IOSAACEncoder.m in Sources */,
 				2DD7106B1E1D230A00BD042C /* FFEncoder.c in Sources */,
 				2DD70FA81E1BE4E900BD042C /* main.m in Sources */,
 			);
