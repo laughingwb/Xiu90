@@ -18,7 +18,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    flvMuxer = [[FFmpegmuxer alloc]initOut:@"rtmp://live.hkstv.hk.lxdns.com/live/hks"];
+//    flvMuxer = [[FFmpegmuxer alloc]initOut:@"rtmp://123.206.206.239:1935/live/wwj"];
+    flvMuxer = [[FFmpegmuxer alloc]initOut:@"rtmp://120.76.157.99:1935/live/test"];
     firstFrame = YES;
     firstAudio = YES;
     [self initH264Encoder];
@@ -126,22 +127,22 @@
         }
         [h264Encoder encode:sampleBuffer];
     }else if (connection == audioConnection) {
-//        if (firstAudio) {
-//            AudioStreamBasicDescription inputFormat = *(CMAudioFormatDescriptionGetStreamBasicDescription(CMSampleBufferGetFormatDescription(sampleBuffer)));
-//            if ([iosAACEncoder initEncode:inputFormat]) {
-//                [self gotAudioFmt:inputFormat.mSampleRate Channels:inputFormat.mChannelsPerFrame SampleBytes:[iosAACEncoder GetAudioFmt:inputFormat.mFormatFlags FmtBits:inputFormat.mBitsPerChannel]];
-//                
-//                firstAudio = NO;
-//            }else {
-//                return;
-//            }
-//        }
-//        int nSize = (int)CMSampleBufferGetTotalSampleSize(sampleBuffer);
-//        char szBuf[8192];
-//        if ([iosAACEncoder encoderAAC:sampleBuffer aacData:szBuf aacLen:&nSize]){
-//            NSData *aacdata = [NSData dataWithBytes:szBuf length:nSize];
-//            [self gotAudioData:aacdata];
-//        }
+        if (firstAudio) {
+            AudioStreamBasicDescription inputFormat = *(CMAudioFormatDescriptionGetStreamBasicDescription(CMSampleBufferGetFormatDescription(sampleBuffer)));
+            if ([iosAACEncoder initEncode:inputFormat]) {
+                [self gotAudioFmt:inputFormat.mSampleRate Channels:inputFormat.mChannelsPerFrame SampleBytes:[iosAACEncoder GetAudioFmt:inputFormat.mFormatFlags FmtBits:inputFormat.mBitsPerChannel]];
+                
+                firstAudio = NO;
+            }else {
+                return;
+            }
+        }
+        int nSize = (int)CMSampleBufferGetTotalSampleSize(sampleBuffer);
+        char szBuf[8192];
+        if ([iosAACEncoder encoderAAC:sampleBuffer aacData:szBuf aacLen:&nSize]){
+            NSData *aacdata = [NSData dataWithBytes:szBuf length:nSize];
+            [self gotAudioData:aacdata];
+        }
     }
 }
 
@@ -168,7 +169,7 @@
 #pragma mark - H264Encoder
 -(void)gotVideoData:(NSData *)data isKeyFrame:(BOOL)isKeyFrame {
     static BOOL first = YES;
-    if (videoinited  && spsPPSseted){
+    if (videoinited && audioinited && spsPPSseted){
         if(first){
             if (isKeyFrame == NO) return;
             first = NO;

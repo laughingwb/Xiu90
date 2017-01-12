@@ -17,8 +17,6 @@
 #include "libavutil/pixdesc.h"
 #include <pthread.h>
 
-
-
 @interface FFmpegmuxer : NSObject {
     AVFormatContext *Out_Format_Ctx;
     AVStream *Out_Audio_Stream;

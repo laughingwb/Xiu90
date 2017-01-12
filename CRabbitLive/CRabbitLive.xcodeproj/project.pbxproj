@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2D9129361E2755F9003454FE /* libx264.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D9129351E2755F9003454FE /* libx264.a */; };
 		2DA933E71E26142E0014660C /* IOSAACEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DA933E61E26142E0014660C /* IOSAACEncoder.m */; };
 		2DD70FA81E1BE4E900BD042C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD70FA71E1BE4E900BD042C /* main.m */; };
 		2DD70FAB1E1BE4E900BD042C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD70FAA1E1BE4E900BD042C /* AppDelegate.m */; };
@@ -56,6 +57,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2D9129321E2755F9003454FE /* x264.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x264.h; sourceTree = "<group>"; };
+		2D9129331E2755F9003454FE /* x264_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x264_config.h; sourceTree = "<group>"; };
+		2D9129351E2755F9003454FE /* libx264.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libx264.a; sourceTree = "<group>"; };
 		2DA933E51E26142E0014660C /* IOSAACEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSAACEncoder.h; sourceTree = "<group>"; };
 		2DA933E61E26142E0014660C /* IOSAACEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSAACEncoder.m; sourceTree = "<group>"; };
 		2DD70FA31E1BE4E900BD042C /* CRabbitLive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CRabbitLive.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -210,6 +214,7 @@
 				2DD710541E1BE53900BD042C /* AVFoundation.framework in Frameworks */,
 				2DD710521E1BE52F00BD042C /* AudioToolbox.framework in Frameworks */,
 				2DD7104D1E1BE51A00BD042C /* libavutil.a in Frameworks */,
+				2D9129361E2755F9003454FE /* libx264.a in Frameworks */,
 				2DD7104F1E1BE51A00BD042C /* libswscale.a in Frameworks */,
 				2DD7104B1E1BE51A00BD042C /* libavfilter.a in Frameworks */,
 				2DD7104A1E1BE51A00BD042C /* libavdevice.a in Frameworks */,
@@ -236,6 +241,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2D9129301E2755F9003454FE /* x264 */ = {
+			isa = PBXGroup;
+			children = (
+				2D9129311E2755F9003454FE /* include */,
+				2D9129341E2755F9003454FE /* lib */,
+			);
+			path = x264;
+			sourceTree = SOURCE_ROOT;
+		};
+		2D9129311E2755F9003454FE /* include */ = {
+			isa = PBXGroup;
+			children = (
+				2D9129321E2755F9003454FE /* x264.h */,
+				2D9129331E2755F9003454FE /* x264_config.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		2D9129341E2755F9003454FE /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				2D9129351E2755F9003454FE /* libx264.a */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
 		2DD70F9A1E1BE4E900BD042C = {
 			isa = PBXGroup;
 			children = (
@@ -260,6 +291,7 @@
 		2DD70FA51E1BE4E900BD042C /* CRabbitLive */ = {
 			isa = PBXGroup;
 			children = (
+				2D9129301E2755F9003454FE /* x264 */,
 				2DD710651E1D1E1F00BD042C /* Encoder */,
 				2DD70FD91E1BE51A00BD042C /* ffmpeg */,
 				2DD70FA91E1BE4E900BD042C /* AppDelegate.h */,
@@ -808,6 +840,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ffmpeg/lib",
+					"$(PROJECT_DIR)/x264/lib",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.wb.com.CRabbitLive;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -828,6 +861,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ffmpeg/lib",
+					"$(PROJECT_DIR)/x264/lib",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.wb.com.CRabbitLive;
 				PRODUCT_NAME = "$(TARGET_NAME)";
