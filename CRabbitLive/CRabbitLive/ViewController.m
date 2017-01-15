@@ -18,8 +18,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-//    flvMuxer = [[FFmpegmuxer alloc]initOut:@"rtmp://123.206.206.239:1935/live/wwj"];
-    flvMuxer = [[FFmpegmuxer alloc]initOut:@"rtmp://120.76.157.99:1935/live/test"];
+    flvMuxer = [[FFmpegmuxer alloc]initOut:@"rtmp://123.206.206.239:1935/live/wwj"];
+//    flvMuxer = [[FFmpegmuxer alloc]initOut:@"rtmp://120.76.157.99:1935/live/test"];
     firstFrame = YES;
     firstAudio = YES;
     [self initH264Encoder];
@@ -53,7 +53,7 @@
     //麦克风
     AVCaptureDevice *audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
     self.audioInputDevice = [AVCaptureDeviceInput deviceInputWithDevice:audioDevice error:nil];
-    self.videoInputDevice = self.frontCamera;
+    self.videoInputDevice = self.backCamera;
 }
 
 -(void)createOutput {
@@ -87,17 +87,8 @@
     if([self.captureSession canAddOutput:self.audioDataOutput]){
         [self.captureSession addOutput:self.audioDataOutput];
     }
-    [self.captureSession setSessionPreset:[NSString stringWithString:AVCaptureSessionPresetHigh]];
-    [self.captureSession startRunning];
-    [self.captureSession beginConfiguration];
+    [self.captureSession setSessionPreset:[NSString stringWithString:AVCaptureSessionPreset1280x720]];
     
-    [self.captureSession commitConfiguration];
-    
-    [self.captureSession startRunning];
-    
-    videoConnection = [self.videoDataOutput connectionWithMediaType:AVMediaTypeVideo];
-    
-    audioConnection = [self.audioDataOutput connectionWithMediaType:AVMediaTypeAudio];
 }
 
 - (void)setDirection:(int)Direction{
@@ -111,8 +102,22 @@
     [previewLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
     previewLayer.frame = self.view.bounds;
     previewLayer.position = CGPointMake(CGRectGetMidX(self.view.bounds),CGRectGetMidY(self.view.bounds));
-    [self setDirection:UIDeviceOrientationPortrait];
+    previewLayer.connection.videoOrientation = videoConnection.videoOrientation;
     [self.view.layer addSublayer:previewLayer];
+ 
+    [self.captureSession startRunning];
+    [self.captureSession beginConfiguration];
+    
+    videoConnection = [self.videoDataOutput connectionWithMediaType:AVMediaTypeVideo];
+    
+    audioConnection = [self.audioDataOutput connectionWithMediaType:AVMediaTypeAudio];
+    [self setDirection:UIDeviceOrientationPortrait];
+    [self.captureSession commitConfiguration];
+    
+    [self.captureSession startRunning];
+    
+
+   
 }
 
 - (void) captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
@@ -120,8 +125,8 @@
         if (firstFrame) {
             firstFrame = NO;
             CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-            int width = (int)CVPixelBufferGetWidth(pixelBuffer);
-            int height = (int)CVPixelBufferGetHeight(pixelBuffer);
+            int width = (int)CVPixelBufferGetHeight(pixelBuffer);
+            int height = (int)CVPixelBufferGetWidth(pixelBuffer);
             [self gotVideoFmt:width height:height];
             [h264Encoder initEncode:width height:height];
         }

@@ -43,7 +43,7 @@
         NSLog(@"set realtime  return: %d", (int)status);
         
         // h264 profile, 直播一般使用baseline，可减少由于b帧带来的延时
-        status = VTSessionSetProperty(EncodingSession, kVTCompressionPropertyKey_ProfileLevel, kVTProfileLevel_H264_Baseline_AutoLevel);
+        VTSessionSetProperty(EncodingSession, kVTCompressionPropertyKey_ProfileLevel, kVTProfileLevel_H264_Baseline_AutoLevel);
         NSLog(@"set profile   return: %d", (int)status);
         
         // 设置编码码率(比特率)，如果不设置，默认将会以很低的码率编码，导致编码出来的视频很模糊
@@ -51,19 +51,19 @@
         CFNumberRef bitRateRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &bitRate);
         VTSessionSetProperty(EncodingSession, kVTCompressionPropertyKey_AverageBitRate, bitRateRef);
         
-        int bitRateLimit = width * height * 33 * 4;
-        CFNumberRef bitRateLimitRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &bitRateLimit);
-        VTSessionSetProperty(EncodingSession, kVTCompressionPropertyKey_DataRateLimits, bitRateLimitRef);
-        NSLog(@"set bitrate   return: %d", (int)status);
+//        int bitRateLimit = width * height * 33 * 4;
+//        CFNumberRef bitRateLimitRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &bitRateLimit);
+//        VTSessionSetProperty(EncodingSession, kVTCompressionPropertyKey_DataRateLimits, bitRateLimitRef);
+//        NSLog(@"set bitrate   return: %d", (int)status);
        
         
         // 设置关键帧间隔，即gop size
         int keyrat = 25;
         VTSessionSetProperty(EncodingSession, kVTCompressionPropertyKey_MaxKeyFrameInterval, CFNumberCreate(NULL, kCFNumberIntType, &keyrat));
         
-        // 设置帧率，只用于初始化session，不是实际FPS
-        VTSessionSetProperty(EncodingSession, kVTCompressionPropertyKey_ExpectedFrameRate, (__bridge CFTypeRef)@(keyrat));
-        NSLog(@"set framerate return: %d", (int)status);
+//        // 设置帧率，只用于初始化session，不是实际FPS
+//        VTSessionSetProperty(EncodingSession, kVTCompressionPropertyKey_ExpectedFrameRate, (__bridge CFTypeRef)@(keyrat));
+//        NSLog(@"set framerate return: %d", (int)status);
         
         // 开始编码
         VTCompressionSessionPrepareToEncodeFrames(EncodingSession);
